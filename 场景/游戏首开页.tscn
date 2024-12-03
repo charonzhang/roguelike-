@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://bj2m2uv6a8k2g"]
+
+[sub_resource type="AudioStreamMicrophone" id="AudioStreamMicrophone_xd74u"]
+
+[node name="游戏首开页" type="Node2D"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="CanvasLayer"]
+stream = SubResource("AudioStreamMicrophone_xd74u")
