@@ -11,13 +11,22 @@ config_version=5
 [application]
 
 config/name="JZTG"
-config/features=PackedStringArray("4.3", "GL Compatibility")
+run/main_scene="res://场景/主游戏.tscn"
+config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://资源/UI/icon.svg"
 
 [editor]
 
 version_control/plugin_name="GitPlugin"
 version_control/autoload_on_startup=true
+
+[layer_names]
+
+2d_physics/layer_1="世界"
+2d_physics/layer_2="玩家"
+2d_physics/layer_3="敌人"
+2d_physics/layer_4="子弹"
+2d_physics/layer_5="道具"
 
 [rendering]
 

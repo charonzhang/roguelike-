@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8kc2ug1ytdnj"]
+
+[ext_resource type="Script" path="res://脚本/武器/基础武器.gd" id="1_yvmqe"]
+
+[node name="基础武器" type="Node2D"]
+script = ExtResource("1_yvmqe")
+
+[node name="攻击计时器" type="Timer" parent="."]
+autostart = true 

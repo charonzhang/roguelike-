@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3 uid="uid://bn8a8pmdqd22k"]
+
+[ext_resource type="Script" path="res://脚本/角色/player.gd" id="1_yvmqe"]
+[ext_resource type="Texture2D" uid="uid://c8kc2ug1ytdnj" path="res://资源/角色/player.png" id="2_yvmqe"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_yvmqe"]
+radius = 16.0
+
+[node name="玩家" type="CharacterBody2D" groups=["player"]]
+collision_layer = 2
+collision_mask = 5
+script = ExtResource("1_yvmqe")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_yvmqe")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_yvmqe")
+
+[node name="相机" type="Camera2D" parent="."]
+position_smoothing_enabled = true
+
+[node name="武器容器" type="Node2D" parent="."]
+
+[node name="受伤冷却" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[node name="受伤动画" type="AnimationPlayer" parent="."] 

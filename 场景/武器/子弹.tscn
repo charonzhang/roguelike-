@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://c8kc2ug1ytdnj"]
+
+[ext_resource type="Script" path="res://脚本/武器/子弹.gd" id="1_yvmqe"]
+[ext_resource type="Texture2D" uid="uid://c8kc2ug1ytdnj" path="res://资源/武器/bullet.png" id="2_yvmqe"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_yvmqe"]
+radius = 4.0
+
+[node name="子弹" type="Area2D"]
+collision_layer = 8
+collision_mask = 4
+script = ExtResource("1_yvmqe")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_yvmqe")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_yvmqe")
+
+[node name="生命周期" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+autostart = true
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="timeout" from="生命周期" to="." method="_on_生命周期_timeout"] 
