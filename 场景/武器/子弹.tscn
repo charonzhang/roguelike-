@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://c8kc2ug1ytdnj"]
 
 [ext_resource type="Script" path="res://脚本/武器/子弹.gd" id="1_yvmqe"]
-[ext_resource type="Texture2D" uid="uid://c8kc2ug1ytdnj" path="res://资源/武器/bullet.png" id="2_yvmqe"]
+[ext_resource type="Texture2D" path="res://资源/UI/icon.svg" id="2_yvmqe"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_yvmqe"]
 radius = 4.0
@@ -12,6 +12,8 @@ collision_mask = 4
 script = ExtResource("1_yvmqe")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(1, 0.8, 0.2, 1)
+scale = Vector2(0.1, 0.1)
 texture = ExtResource("2_yvmqe")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

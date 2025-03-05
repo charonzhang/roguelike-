@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://dqnvyj8yj4o5q"]
+
+[ext_resource type="Script" path="res://脚本/武器/子弹武器.gd" id="1_bullet"]
+
+[node name="子弹武器" type="Node2D"]
+script = ExtResource("1_bullet")
+
+[node name="attack_timer" type="Timer" parent="."]
+wait_time = 0.667
+autostart = true 

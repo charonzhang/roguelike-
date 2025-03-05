@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://bhww6g5vyp56a"]
+[gd_scene load_steps=2 format=3 uid="uid://bhww6g5vyp56a"]
+
+[ext_resource type="Texture2D" uid="uid://default_texture" path="res://icon.svg" id="1_default"]
 
 [node name="首页" type="Control"]
 layout_mode = 3
@@ -9,3 +11,5 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(576, 324)
+texture = ExtResource("1_default")

@@ -1,7 +1,8 @@
 extends Node2D
 
-var enemy_scenes = {
-	"普通敌人": preload("res://场景/敌人.tscn")
+# 使用字典存储敌人类型和对应的路径
+var enemy_paths = {
+	"普通敌人": "res://场景/敌人/敌人.tscn"
 }
 
 var game_time = 0
@@ -18,12 +19,24 @@ var difficulty_increase_rate = 0.1
 @onready var health_bar = $UI/生命值
 @onready var timer_label = $UI/计时器
 
+signal level_up(level: int)
+
+var current_level = 1
+var experience = 0
+var experience_required = 100
+var game_paused = false
+
 func _ready():
 	# 连接信号
-	player.player_hit.connect(_on_player_hit)
-	player.experience_gained.connect(_on_experience_gained)
-	player.level_up.connect(_on_level_up)
-	game_timer.timeout.connect(_on_game_timer_timeout)
+	if player:
+		if player.has_signal("player_hit"):
+			player.player_hit.connect(_on_player_hit)
+		if player.has_signal("experience_gained"):
+			player.experience_gained.connect(_on_experience_gained)
+		if player.has_signal("level_up"):
+			player.level_up.connect(_on_level_up)
+	if game_timer:
+		game_timer.timeout.connect(_on_game_timer_timeout)
 	
 	# 初始化UI
 	exp_bar.value = 0
@@ -31,9 +44,9 @@ func _ready():
 	health_bar.value = 1
 	timer_label.text = "00:00"
 
-func _process(delta):
+func _process(_delta):
 	# 更新游戏时间显示
-	var minutes = int(game_time / 60)
+	var minutes = int(game_time / 60.0)
 	var seconds = int(game_time) % 60
 	timer_label.text = "%02d:%02d" % [minutes, seconds]
 
@@ -48,6 +61,16 @@ func _on_game_timer_timeout():
 	spawn_enemies()
 
 func spawn_enemies():
+	# 如果敌人场景不存在，只打印一次错误消息
+	var enemy_type = "普通敌人"
+	var enemy_path = enemy_paths[enemy_type]
+	if not ResourceLoader.exists(enemy_path):
+		# 使用静态变量记录是否已经打印过错误消息
+		if not has_meta("printed_enemy_error"):
+			print("敌人场景文件不存在: " + enemy_path + "，请创建此场景文件或修改路径")
+			set_meta("printed_enemy_error", true)
+		return
+	
 	# 计算要生成的敌人数量
 	var spawn_count = int(spawn_rate)
 	
@@ -65,9 +88,7 @@ func spawn_enemies():
 		if current_enemies + i >= max_enemies:
 			break
 			
-		var enemy_type = "普通敌人"  # 可以根据游戏时间选择不同类型的敌人
-		var enemy_scene = enemy_scenes[enemy_type]
-		
+		var enemy_scene = load(enemy_path)
 		var enemy_instance = enemy_scene.instantiate()
 		
 		# 在玩家周围随机位置生成敌人（屏幕外）
@@ -87,52 +108,79 @@ func increase_difficulty():
 func _on_player_hit(current_health, max_health):
 	health_bar.value = float(current_health) / max_health
 
-func _on_experience_gained(current_exp, max_exp, level):
+func _on_experience_gained(current_exp, max_exp, _level):
 	exp_bar.value = float(current_exp) / max_exp
 
-func _on_level_up(new_level):
-	level_label.text = str(new_level)
-	
-	# 显示升级选择界面
-	var upgrade_scene = load("res://场景/升级选择.tscn")
-	if upgrade_scene:
-		var upgrade_instance = upgrade_scene.instantiate()
-		upgrade_instance.upgrade_selected.connect(_on_upgrade_selected)
-		add_child(upgrade_instance)
+func _on_level_up(level: int):
+	show_upgrade_screen()
 
-func _on_upgrade_selected(upgrade_type, upgrade_name):
-	if upgrade_type == 0:
-		# 武器升级
-		var existing_weapon = false
-		
-		# 检查玩家是否已有该武器
-		for weapon in player.weapons_container.get_children():
-			if weapon.name.begins_with(upgrade_name):
-				# 升级现有武器
-				weapon.upgrade()
-				existing_weapon = true
-				break
-		
-		if not existing_weapon:
-			# 添加新武器
-			player.add_weapon(upgrade_name)
-	else:
-		# 属性升级
-		match upgrade_name:
-			"攻击力":
-				# 提升所有武器的攻击力
-				for weapon in player.weapons_container.get_children():
-					weapon.damage += 5
-			"攻击速度":
-				# 提升所有武器的攻击速度
-				for weapon in player.weapons_container.get_children():
-					weapon.attack_speed += 0.2
-					weapon.attack_timer.wait_time = 1.0 / weapon.attack_speed
-			"生命值":
-				# 提升玩家生命值
-				player.max_health += 20
-				player.health = player.max_health
-				player.player_hit.emit(player.health, player.max_health)
-			"移动速度":
-				# 提升玩家移动速度
-				player.speed += 30 
+func gain_experience(amount):
+	experience += amount
+	$UI/经验条.value = float(experience) / experience_required
+	
+	if experience >= experience_required:
+		current_level += 1
+		experience -= experience_required
+		experience_required = calculate_next_level_experience()
+		$UI/等级.text = str(current_level)
+		$UI/经验条.max_value = experience_required
+		$UI/经验条.value = float(experience) / experience_required
+		show_upgrade_screen()
+
+func calculate_next_level_experience():
+	# 每级所需经验值增加20%
+	return int(experience_required * 1.2)
+
+func show_upgrade_screen():
+	# 暂停游戏
+	get_tree().paused = true
+	game_paused = true
+	
+	# 显示升级界面
+	var upgrade_screen = $UI/升级界面
+	upgrade_screen.visible = true
+	
+	# 清除旧的升级选项
+	var options_container = $UI/升级界面/选项容器
+	for child in options_container.get_children():
+		child.queue_free()
+	
+	# 生成新的升级选项
+	generate_upgrade_options()
+
+func generate_upgrade_options():
+	var options = get_random_upgrades()
+	var container = $UI/升级界面/选项容器
+	
+	for option in options:
+		var button = Button.new()
+		button.text = option.name + "\n" + option.description
+		button.custom_minimum_size = Vector2(300, 80)
+		button.pressed.connect(func(): select_upgrade(option))
+		container.add_child(button)
+
+func get_random_upgrades():
+	# 这里返回可用的升级选项
+	return [
+		{"name": "增加伤害", "description": "武器伤害增加20%", "type": "damage"},
+		{"name": "提升攻速", "description": "攻击速度提升15%", "type": "attack_speed"},
+		{"name": "生命提升", "description": "最大生命值增加20%", "type": "health"}
+	]
+
+func select_upgrade(upgrade):
+	# 应用升级效果
+	match upgrade.type:
+		"damage":
+			# 增加武器伤害
+			pass
+		"attack_speed":
+			# 提升攻击速度
+			pass
+		"health":
+			# 提升最大生命值
+			pass
+	
+	# 关闭升级界面并恢复游戏
+	$UI/升级界面.visible = false
+	get_tree().paused = false
+	game_paused = false
