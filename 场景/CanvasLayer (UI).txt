@@ -1,0 +1,3 @@
+CanvasLayer (UI)
+└── 升级界面 (Control)
+	└── 选项容器 (HBoxContainer/VBoxContainer)

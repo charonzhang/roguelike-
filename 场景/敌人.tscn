@@ -1,10 +1,10 @@
 [gd_scene load_steps=4 format=3 uid="uid://cc7567e2bqurf"]
 
-[ext_resource type="Script" path="res://脚本/角色/敌人.gd" id="1_yvmqe"]
-[ext_resource type="Texture2D" uid="uid://c8kc2ug1ytdnj" path="res://资源/角色/enemy.png" id="2_yvmqe"]
+[ext_resource type="Script" uid="uid://c7vvdwrh742d5" path="res://脚本/角色/敌人.gd" id="1_yvmqe"]
+[ext_resource type="Texture2D" uid="uid://bx74t84y7ja5u" path="res://资源/UI/icon.svg" id="2_eneuq"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_yvmqe"]
-radius = 16.0
+radius = 9.0
 
 [node name="敌人" type="CharacterBody2D" groups=["enemy"]]
 collision_layer = 4
@@ -12,7 +12,9 @@ collision_mask = 3
 script = ExtResource("1_yvmqe")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_yvmqe")
+modulate = Color(1, 0, 0, 1)
+scale = Vector2(0.195, 0.195)
+texture = ExtResource("2_eneuq")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_yvmqe")
@@ -26,4 +28,4 @@ max_value = 1.0
 value = 1.0
 show_percentage = false
 
-[node name="受伤动画" type="AnimationPlayer" parent="."] 
+[node name="受伤动画" type="AnimationPlayer" parent="."]

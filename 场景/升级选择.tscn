@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dbnjhcmovv0pm"]
 
-[ext_resource type="Script" uid="uid://b5b5vcgwhtgyk" path="res://脚本/升级选择.gd" id="1_yvmqe"]
+[ext_resource type="Script" uid="uid://dsc3e8e0n750i" path="res://脚本/升级选择.gd" id="1_yvmqe"]
 
 [node name="升级选择" type="CanvasLayer"]
 process_mode = 3

@@ -64,8 +64,11 @@ func select_upgrade(index):
 	# 发出升级选择信号
 	upgrade_selected.emit(upgrade.type, upgrade.name)
 	
+	# 隐藏升级选择界面而不是销毁它
+	visible = false
+	
+	# 重新生成选项为下次升级做准备
+	generate_upgrade_options()
+	
 	# 恢复游戏
 	get_tree().paused = false
-	
-	# 隐藏升级选择界面
-	queue_free() 

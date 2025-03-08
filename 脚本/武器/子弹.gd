@@ -11,6 +11,15 @@ var critical_chance = 0.1  # 暴击几率
 var critical_multiplier = 2.0  # 暴击伤害倍数
 var player_hit = false  # 添加这个变量来跟踪是否击中玩家
 
+func _ready():
+	# 设置子弹的生命周期
+	var timer = Timer.new()
+	timer.wait_time = 3.0  # 3秒后销毁
+	timer.one_shot = true
+	timer.timeout.connect(queue_free)
+	add_child(timer)
+	timer.start()
+
 func _physics_process(delta):
 	if auto_aim:
 		# 寻找最近的敌人
@@ -75,14 +84,7 @@ func calculate_damage():
 		return damage * critical_multiplier
 	return damage
 
-func create_hit_effect(enemy, damage_amount):
-	# 这里可以添加击中特效，比如：
-	# - 粒子效果
-	# - 伤害数字
-	# - 击中音效
-	# - 屏幕震动等
+func create_hit_effect(_enemy, _damage_amount):
+	# 这里可以添加击中特效
+	# 例如：粒子效果、伤害数字、声音等
 	pass
-
-func _on_生命周期_timeout():
-	# 子弹生命周期结束，销毁子弹
-	queue_free() 

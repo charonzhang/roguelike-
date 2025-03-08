@@ -43,19 +43,32 @@ func take_damage(amount, knockback_vector = Vector2.ZERO, knockback_strength = 0
 		die()
 
 func die():
-	# 生成经验宝石
-	spawn_experience_gem()
+	# 使用call_deferred延迟生成经验宝石，避免物理查询错误
+	call_deferred("spawn_experience_gem")
 	
 	# 销毁敌人
 	queue_free()
 
 func spawn_experience_gem():
+	print("尝试生成经验宝石")
 	var gem_scene = load("res://场景/经验宝石.tscn")
 	if gem_scene:
 		var gem_instance = gem_scene.instantiate()
-		gem_instance.position = global_position
+		gem_instance.global_position = global_position
 		gem_instance.experience_value = experience_value
-		get_parent().add_child(gem_instance)
+		
+		# 正确添加宝石到主游戏场景
+		var main_scene = get_tree().current_scene
+		if main_scene:
+			print("添加经验宝石到场景")
+			# 使用call_deferred安全地添加子节点
+			main_scene.call_deferred("add_child", gem_instance)
+		else:
+			print("无法找到主场景，尝试添加到当前父节点")
+			if is_instance_valid(get_parent()):
+				get_parent().call_deferred("add_child", gem_instance)
+	else:
+		push_error("无法加载经验宝石场景")
 
 func _on_body_entered(body):
 	if body.is_in_group("player"):

@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cgp65h8lcfphe"]
 
-[ext_resource type="Script" path="res://脚本/经验宝石.gd" id="1_yvmqe"]
-[ext_resource type="Texture2D" uid="uid://c8kc2ug1ytdnj" path="res://资源/道具/gem.png" id="2_yvmqe"]
+[ext_resource type="Script" uid="uid://hto4cu8fsc8y" path="res://脚本/经验宝石.gd" id="1_yvmqe"]
+[ext_resource type="Texture2D" uid="uid://bx74t84y7ja5u" path="res://资源/UI/icon.svg" id="2_khnve"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_yvmqe"]
 radius = 8.0
@@ -12,9 +12,11 @@ collision_mask = 2
 script = ExtResource("1_yvmqe")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_yvmqe")
+modulate = Color(0, 1, 0, 1)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_khnve")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_yvmqe")
 
-[connection signal="body_entered" from="." to="." method="_on_body_entered"] 
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
